@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.demo.dao.SchoolOrderDao">
+
+    <!-- 发布信息 -->
+    <insert id="addSchoolInfo" parameterType="com.example.demo.modle.SchoolOrder">
+        insert into school_order (order_number,order_type,order_status,pay_status,user_id_announcer,user_id_recipient
+        ,gatewaytype,sys_time,is_del_announcer,is_del_recipient,school_name,subject_take_a,give_away_b,size_content_c
+        ,backup,take_name, take_phone,receive_name,receive_phone,order_amount)
+        values(#{order_number},#{order_type},#{order_status},#{pay_status},#{user_id_announcer},0
+        ,#{gatewaytype},NOW(),'0','0',#{school_name},#{subject_take_a},#{give_away_b}
+        ,#{size_content_c},#{backup},#{take_name}, #{take_phone},#{receive_name},#{receive_phone},#{order_amount})
+    </insert>
+
+    <!-- 领取信息 -->
+    <update id="updateSchoolInfo" parameterType="com.example.demo.modle.SchoolOrder">
+        update school_order set user_id_recipient = #{user_id_recipient},order_status = '1',get_phone = #{get_phone}
+        where order_number =#{order_number}
+    </update>
+
+    <!-- 查询发布列表 -->
+    <select id="selectSchoolOrderList" parameterType="com.example.demo.modle.SchoolOrder" resultType="java.util.Map">
+        SELECT * FROM school_order s
+        <where>
+            1 = 1
+            <if test="user_id_announcer !=null and user_id_announcer !='' ">
+                AND s.user_id_announcer = #{user_id_announcer}
+            </if>
+            <if test="user_id_recipient !=null and user_id_recipient !='' ">
+                AND s.user_id_recipient = #{user_id_recipient}
+            </if>
+            <if test="order_status !=null and order_status !='' ">
+                AND s.order_status = #{order_status}
+            </if>
+        </where>
+        ORDER BY s.sys_time DESC
+        LIMIT #{page_index}, #{page_size};
+    </select>
+
+    <!-- 根据单号查询订单 -->
+    <select id="selectOrderinfoByNumber" parameterType="java.lang.String" resultType="java.util.Map">
+        select o.*,u.nickname from school_order o LEFT JOIN user_info u
+        ON o.user_id_recipient = u.user_id where order_number = #{order_number}
+    </select>
+
+    <!-- 插入子订单信息 -->
+    <!--<insert id="insertsOrderAddress" parameterType="com.example.demo.modle.SchoolOrder">-->
+    <!--insert into school_order_address (s_order_num,s_order_name,s_order_phone,s_order_address,s_order_type)-->
+    <!--values(#{s_order_num},#{s_order_name},#{s_order_phone},#{s_order_address},#{s_order_type})-->
+    <!--</insert>-->
+
+    <!-- 查询用户昵称根据用户id -->
+    <select id="selectnickname" parameterType="java.lang.String" resultType="java.lang.String">
+        select nickname from user_info where user_id = #{user_id}
+    </select>
+
+
+</mapper>

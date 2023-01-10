@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.dao.EquipmentMapper">
+
+    <!-- 设备查询总条数 -->
+    <select id="countcarnum" parameterType="com.example.demo.modle.SchoolOrder" resultType="java.lang.Integer">
+        SELECT count(1) FROM tb_car
+        <where>
+            1=1
+            <if test="deviceId != '' and deviceId != null">and deviceId = #{deviceId}</if>
+            <if test="deptId != '' and deptId != null">and deptId = #{deptId}</if>
+        </where>
+    </select>
+    <!-- 设备查询 -->
+    <select id="findCarInfoByLists" parameterType="com.example.demo.modle.SchoolOrder" resultType="java.util.Map">
+        select
+        carid as d1,
+        deviceId as d2,
+        venderName as d3,
+        chassis as d4,
+        `engine` as d5,
+        plate as d6,
+        horsepower as d7,
+        ownerName as d8,
+        ownerPhone as d9,
+        IFNULL(typeClass,'') as d10,
+        deptPath as d11,
+        deptName as d12,
+        installDate as d13,
+        installMan as d14,
+        clientId,
+        regionCode,
+        deptId,
+        endDate,
+        IF(ISNULL(changeDate),0,1) as d15
+        from v_carinfo_change
+        <where>
+            1=1
+            <if test="deviceId != '' and deviceId != null">and deviceId = #{deviceId}</if>
+            <if test="deptId != '' and deptId != null">and deptId = #{deptId}</if>
+            <if test="regionCode != '' and regionCode != null">and regionCode = #{regionCode}</if>
+            <if test="startDate != '' and startDate != null">and installDate &gt;= #{startDate}</if>
+            <if test="endDate != '' and endDate != null">and installDate &lt;= #{endDate}</if>
+
+        </where>
+        ORDER BY carid DESC
+        LIMIT #{page_index}, #{page_size};
+    </select>
+
+    <!-- 查询作业总条数 -->
+    <select id="countjobnum" parameterType="com.example.demo.modle.SchoolOrder" resultType="java.lang.Integer">
+        SELECT count(1) FROM ${tableName}
+        <where>
+            1=1
+            <if test="deviceId != '' and deviceId != null">and deviceId = #{deviceId}</if>
+            <if test="deptId != '' and deptId != null">and deptId = #{deptId}</if>
+            <if test="startDate != '' and startDate != null">and workDate &gt;= #{startDate}</if>
+            <if test="endDate != '' and endDate != null">and workDate &lt;= #{endDate}</if>
+        </where>
+    </select>
+
+    <!-- 作业查询 -->
+    <select id="findJobInfoByLists1" parameterType="com.example.demo.modle.SchoolOrder" resultType="java.util.Map">
+        select
+        deviceId as w1,
+        carId as w2,
+        workType as w3,
+        workDate as w4,
+        beginTime as w5,
+        endTime as w6,
+        plotId as w7,
+        surveyPoints as w8,
+        distance as w9,
+        disWork as w10,
+        longitude as w11,
+        latitude as w12,
+        identifyId as w13,
+        IFNULL((SELECT tf.machineName FROM tb_identifymodule tf WHERE
+        tf.identifyId=t.identifyId AND t.carId=tf.carId),"") as w14,
+        machineWidth as w15,
+        areaVaild as w16,
+        area as w17,
+        arg3 as w18,
+        arg1 as w19,
+        arg0 as w20,
+        loc1 as w21,
+        loc2 as w22,
+        loc3 as w23,
+        loc4 as w24,
+        loc5 as w25,
+        disWorkWear as w26,
+        sprayingNumber as w27,
+        clientId
+        from ${tableName} t
+        <where>
+            1=1
+            <!--                        <if test="deviceId != '' and deviceId != null">and deviceId = #{deviceId}</if>-->
+            <choose>
+                <when test="deviceId != '' and deviceId != null">and deviceId = #{deviceId}</when>
+                <otherwise>
+                    and ( 1=0 or
+                    <foreach collection="array" item="item" index="index" separator="or">
+                        regionCode like #{item}
+                    </foreach>
+                    )
+                </otherwise>
+            </choose>
+            <if test="startDate != '' and startDate != null">and t.workDate &gt;= #{startDate}</if>
+            <if test="endDate != '' and endDate != null">and t.workDate &lt;= #{endDate}</if>
+        </where>
+        order by t.workDate asc
+        LIMIT #{page_index}, #{page_size};
+    </select>
+
+
+    <!-- 位置查询 -->
+    <select id="findLocationByLists" parameterType="com.example.demo.modle.SchoolOrder" resultType="java.util.Map">
+        select
+        deviceId as l1,
+        carId as l2,
+        longitude as l3,
+        latitude as l4,
+        gpsTime as l5,
+        identifyId as l6,
+        depth as l7,
+        angle as l8,
+        speed as l9,
+        IFNULL(macWidth,0) as l10
+        from v_carinfo_rt_xuni
+        <where>
+            1=1
+            <choose>
+                <when test="deviceId != '' and deviceId != null">and deviceId = #{deviceId}</when>
+                <otherwise>
+                    and ( 1=0 or
+                    <foreach collection="regionCode" item="item" index="index"
+                             separator="or">
+                        regionCode like #{item}
+                    </foreach>
+                    )
+                </otherwise>
+            </choose>
+        </where>
+
+    </select>
+
+
+    <!-- 机具信息查询 -->
+    <select id="findMachineToolByList" parameterType="com.example.demo.modle.SchoolOrder" resultType="java.util.Map">
+        select
+        t.identifyId as m1,
+        t.workType as m2,
+        t.machineName as m3,
+        t.carId as m4,
+        t.width as m5
+        from
+        tb_identifymodule t,
+        v_carinfo c
+        <where>
+            t.carId = c.carId
+            <if test="machineId != '' and machineId != null">and t.machineId = #{machineId}</if>
+            <if test="deviceId != '' and deviceId != null">
+                and c.deviceId = #{deviceId}
+            </if>
+        </where>
+    </select>
+
+
+    <!-- 单位总数 -->
+    <select id="countDeptnum" parameterType="com.example.demo.modle.SchoolOrder" resultType="java.lang.Integer">
+        SELECT count(1) FROM tb_dept
+        <where>
+            1=1
+            <if test="deviceId != '' and deviceId != null">and deviceId = #{deviceId}</if>
+            <if test="deptId != '' and deptId != null">and deptId = #{deptId}</if>
+        </where>
+    </select>
+
+    <!-- 单位查询 -->
+    <select id="findDeptByLists" parameterType="com.example.demo.modle.SchoolOrder" resultType="java.util.Map">
+        select * from tb_dept
+        <where>
+            1=1
+            <if test="deviceId != '' and deviceId != null">and deviceId = #{deviceId}</if>
+            <if test="deptId != '' and deptId != null">and deptId = #{deptId}</if>
+        </where>
+        LIMIT #{page_index}, #{page_size};
+    </select>
+
+
+    <!-- 根据设备号查询到期时间 -->
+    <select id="lelectEndDate" parameterType="String" resultType="java.lang.String">
+        SELECT endDate FROM tb_car WHERE deviceId = #{deviceId}
+    </select>
+
+
+</mapper>   

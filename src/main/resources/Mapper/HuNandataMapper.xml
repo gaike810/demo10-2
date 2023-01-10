@@ -1,0 +1,400 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.dao.HuNanDataMapper">
+
+    <!-- 设备查询总条数 -->
+    <select id="countcarnum" parameterType="com.example.demo.modle.SchoolOrder" resultType="java.lang.Integer">
+        SELECT count(1) FROM tb_car
+        <where>
+            1=1
+            <if test="deviceId != '' and deviceId != null">and deviceId = #{deviceId}</if>
+            <if test="deptId != '' and deptId != null">and deptId = #{deptId}</if>
+        </where>
+    </select>
+
+    <!-- 查询所有 -->
+    <select id="findAllDataLists" parameterType="String" resultType="java.util.Map">
+
+
+        -- 湘数
+        -- SELECT county, sum(areaVaild) as areaVaild FROM (
+        SELECT (SELECT deptPath from tb_dept where regionCode=SUBSTRING(a.regionCode,1,6)) as 'county',
+        sum(areaVaild) as areaVaild
+        from v_workplotitem_2022 a where
+        (regionCode like 'c60103%' or
+        regionCode like 'c60601%' or
+        regionCode like 'c60901%' or
+        regionCode like 'c60703%' or
+        regionCode like 'c61003%' or
+        regionCode like 'c61005%' or
+        regionCode like 'c61004%' or
+        regionCode like 'c61008%' or
+        regionCode like 'c60105%' or
+        regionCode like 'c60106%' or
+        regionCode like 'c60108%' or
+        regionCode like 'c61006%' or
+        regionCode like 'c60704%' or
+        regionCode like 'c60805%' or
+        regionCode like 'c60504%' or
+        regionCode like 'c60303%' or
+        regionCode like 'c60508%' or
+        regionCode like 'c60606%' or
+        regionCode like 'c60607%' or
+        regionCode like 'c60701%' or
+        regionCode like 'c60702%' or
+        regionCode like 'c60705%' or
+        regionCode like 'c60706%' or
+        regionCode like 'c60707%' or
+        regionCode like 'c61007%' or
+        regionCode like 'c61102%' or
+        regionCode like 'c61402%' or
+
+        regionCode like 'c61002%' or
+        regionCode like 'c61202%' or
+        regionCode like 'c60609%' or
+        regionCode like 'd507%' )
+        and (
+        workType = '50' or workType = '41' or workType = '20'
+        or workType = '13' or workType = '30'
+        or workType = '61' or workType = '17' or workType = '18'
+        OR workType = '44' or workType = '69' or workType='31' or workType='88' or workType='98'
+        )
+        and areaVaild>0 and flag>0 and workhide=0
+        and length(deviceId) &lt;= 8
+        GROUP BY SUBSTRING(regionCode,1,6)
+        -- union
+        -- SELECT (SELECT deptPath from tb_dept where regionCode=SUBSTRING(a.regionCode,1,6)) as 'county',
+        -- sum(areaVaild) as areaVaild
+        -- from v_workplotitem_2023 a where
+        -- (regionCode like 'c60103%' or
+        -- regionCode like 'c60601%' or
+        -- regionCode like 'c60901%' or
+        -- regionCode like 'c60703%' or
+        -- regionCode like 'c61003%' or
+        -- regionCode like 'c61005%' or
+        -- regionCode like 'c61004%' or
+        -- regionCode like 'c61008%' or
+        -- regionCode like 'c60105%' or
+        -- regionCode like 'c60106%' or
+        -- regionCode like 'c60108%' or
+        -- regionCode like 'c61006%' or
+        -- regionCode like 'c60704%' or
+        -- regionCode like 'c60805%' or
+        -- regionCode like 'c60504%' or
+        -- regionCode like 'c60303%' or
+        -- regionCode like 'c60508%' or
+        -- regionCode like 'c60606%' or
+        -- regionCode like 'c60607%' or
+        -- regionCode like 'c60701%' or
+        -- regionCode like 'c60702%' or
+        -- regionCode like 'c60705%' or
+        -- regionCode like 'c60706%' or
+        -- regionCode like 'c60707%' or
+        -- regionCode like 'c61007%' or
+        -- regionCode like 'c61102%' or
+        -- regionCode like 'c61402%' or
+        --
+        -- regionCode like 'c61002%' or
+        -- regionCode like 'c61202%' or
+        -- regionCode like 'c60609%' or
+        -- regionCode like 'd507%' )
+        -- and (
+        -- workType = '50' or workType = '41' or workType = '20'
+        -- or workType = '13' or workType = '30' or workType = '15'
+        -- or workType = '61' or workType = '17' or workType = '18'
+        -- OR workType = '44' or workType = '69' or workType='31' or workType='88' or workType='98'
+        -- )
+        -- and areaVaild>0 and flag>0 and workhide=0
+        -- and length(deviceId) &lt;= 8
+        -- GROUP BY SUBSTRING(regionCode,1,6)
+        -- ) as aa GROUP BY county
+
+
+        UNION
+        -- 派得县级
+        SELECT (SELECT deptPath from tb_dept where regionCode=SUBSTRING(a.regionCode,1,6)) as '县',
+        --
+--         SUBSTRING(a.regionCode,1,6),REPLACE(REPLACE(REPLACE(REPLACE(deviceId,"hnxs_",""),"bznhn_",""),"bjbchn_",""),"jsbdhn_","")
+--         as deviceId,deviceId as deviceIdold,clientId,workDate,workType,
+        sum(areaVaild) as areaVaild
+        -- ,createTime,updateTime,CONCAT(" UPDATE tb_workplotitembase_2022 set updateTime=NOW() where
+--         clientId='",clientId,"' and workDate='",workDate,"' and workType='",workType,"'; ")
+        from v_workplotitem_2022 a where
+        (regionCode like 'c60503%' or regionCode like 'c61301%' or regionCode like 'c61001%' or regionCode like
+        'c60503%' or regionCode like 'c60803%' or regionCode like 'c60205%' or regionCode like 'c60902%' or regionCode
+        like 'c61103%' or regionCode like 'd5070%' or regionCode like 'c60509%' or regionCode like 'c60605%')
+        AND ( workType = '13' or workType = '20' or workType = '30' or workType = '41' or workType = '17' or workType =
+        '50' or workType = '61' or workType = '15' or workType = '44' OR workType = '31' or workType = '69' or workType
+        = '98' )
+        and areaVaild>0 and flag>0 and workhide=0
+        and length(deviceId) &lt;= 8
+        GROUP BY SUBSTRING(regionCode,1,6)
+
+
+        UNION
+        SELECT county, sum(areaVaild) as areaVaild FROM (
+        -- 博创
+        SELECT (SELECT deptPath from tb_dept where regionCode=SUBSTRING(a.regionCode,1,6)) as 'county',
+        --
+--         SUBSTRING(a.regionCode,1,6),REPLACE(REPLACE(REPLACE(REPLACE(deviceId,"hnxs_",""),"bznhn_",""),"bjbchn_",""),"jsbdhn_","")
+--         as deviceId,deviceId as deviceIdold,clientId,workDate,workType,
+        sum(areaVaild) as areaVaild
+        -- ,createTime,updateTime,CONCAT(" UPDATE tb_workplotitembase_2022 set updateTime=NOW() where
+--         clientId='",clientId,"' and workDate='",workDate,"' and workType='",workType,"'; ")
+        from v_workplotitem_2022 a where
+        (regionCode like 'c60104%' or
+        regionCode like 'c60502%' or
+        regionCode like 'c60507%' or
+        regionCode like 'c60903%' or
+        regionCode like 'c61401%' ) AND (workType = '50' or workType = '41' or workType = '20'
+        or workType = '13' or workType = '30' or workType = '15'
+        or workType = '61' or workType = '17' or workType = '18'
+        OR workType = '44' or workType = '69' or workType = '88')
+        and areaVaild>0 and flag>0 and workhide=0
+        and length(deviceId) &lt;= 8
+        GROUP BY SUBSTRING(regionCode,1,6)
+        UNION
+
+        SELECT (SELECT deptPath from tb_dept where regionCode=SUBSTRING(a.regionCode,1,6)) as 'county',
+        --
+--         SUBSTRING(a.regionCode,1,6),REPLACE(REPLACE(REPLACE(REPLACE(deviceId,"hnxs_",""),"bznhn_",""),"bjbchn_",""),"jsbdhn_","")
+--         as deviceId,deviceId as deviceIdold,clientId,workDate,workType,
+        sum(areaVaild) as areaVaild
+        -- ,createTime,updateTime,CONCAT(" UPDATE tb_workplotitembase_2022 set updateTime=NOW() where
+--         clientId='",clientId,"' and workDate='",workDate,"' and workType='",workType,"'; ")
+        from v_workplotitem_2023 a where
+        (regionCode like 'c60104%' or
+        regionCode like 'c60502%' or
+        regionCode like 'c60507%' or
+        regionCode like 'c60903%' or
+        regionCode like 'c61401%' ) AND (workType = '50' or workType = '41' or workType = '20'
+        or workType = '13' or workType = '30' or workType = '15'
+        or workType = '61' or workType = '17' or workType = '18'
+        OR workType = '44' or workType = '69' or workType = '88')
+        and areaVaild>0 and flag>0 and workhide=0
+        and length(deviceId) &lt;= 8
+        GROUP BY SUBSTRING(regionCode,1,6)
+        ) as aa GROUP BY county
+        UNION
+
+        -- 区县面积总数
+        SELECT (SELECT deptPath from tb_dept where regionCode=SUBSTRING(a.regionCode,1,6)) as '县',
+        sum(areaVaild) as areaVaild
+        from v_workplotitem_2022 a where
+        ( regionCode like 'c60101%' or
+        regionCode like 'c60201%' or
+        regionCode like 'c60202%' or
+        regionCode like 'c60203%' or
+        regionCode like 'c60204%' or
+        regionCode like 'c60301%' or
+        regionCode like 'c60302%' or
+        regionCode like 'c60401%' or
+        regionCode like 'c60402%' or
+        regionCode like 'c60501%' or
+        regionCode like 'c60602%' or
+        regionCode like 'c60603%' or
+        regionCode like 'c60604%' or
+        regionCode like 'c60802%' or
+        regionCode like 'c61201%' or
+        regionCode like 'c60801%' or
+        regionCode like 'c61302%' or
+        regionCode like 'c61302%' or
+        regionCode like 'c61101%' or
+        regionCode like 'c60904%' ) and workType in("13","15","17","18", "20", "30","31",
+        "41","44","50","61","69","88","98") and areaVaild>0 and flag>0 and workhide=0
+        GROUP BY SUBSTRING(regionCode,1,6)
+
+        UNION
+        -- 江苏北斗
+        SELECT (SELECT deptPath from tb_dept where regionCode=SUBSTRING(a.regionCode,1,6)) as '县',
+        --
+--         SUBSTRING(a.regionCode,1,6),REPLACE(REPLACE(REPLACE(REPLACE(deviceId,"hnxs_",""),"bznhn_",""),"bjbchn_",""),"jsbdhn_","")
+--         as deviceId,deviceId as deviceIdold,clientId,workDate,workType,
+        sum(areaVaild) as areaVaild
+        -- ,createTime,updateTime,CONCAT(" UPDATE tb_workplotitembase_2022 set updateTime=NOW() where
+--         clientId='",clientId,"' and workDate='",workDate,"' and workType='",workType,"'; ")
+        from v_workplotitem_2022 a where
+        (regionCode like 'c60404%' or
+        regionCode like 'c60403%' ) AND (workType = '50' or workType = '41' or workType = '20'
+        or workType = '13' or workType = '30' or workType = '15'
+        or workType = '61' or workType = '17' or workType = '18'
+        OR workType = '44' or workType = '69' or workType = '88')
+        and areaVaild>0 and flag>0 and workhide=0
+        and length(deviceId) &lt;= 8
+        GROUP BY SUBSTRING(regionCode,1,6)
+
+
+    </select>
+
+    <!-- 查询作业总条数 -->
+    <select id="countjobnum" parameterType="com.example.demo.modle.SchoolOrder" resultType="java.lang.Integer">
+        SELECT count(1) FROM ${tableName}
+        <where>
+            1=1
+            <if test="deviceId != '' and deviceId != null">and deviceId = #{deviceId}</if>
+            <if test="deptId != '' and deptId != null">and deptId = #{deptId}</if>
+            <if test="startDate != '' and startDate != null">and workDate &gt;= #{startDate}</if>
+            <if test="endDate != '' and endDate != null">and workDate &lt;= #{endDate}</if>
+        </where>
+    </select>
+
+    <!-- 博创查询 -->
+    <select id="findBochuangByLists" parameterType="com.example.demo.modle.SchoolOrder" resultType="java.util.Map">
+
+--         SELECT '衡东县' as 'county',sum(b.area) as areaVaild FROM v_carinfo_2022 a INNER JOIN
+--         (SELECT deviceId,workDate,sum(area) as area from jobdetaillst where factoryId='bochuang' and area>0 GROUP BY
+--         deviceId,workDate ) b ON a.deviceId = b.deviceId WHERE a.regionCode LIKE 'c60104%'
+--         UNION
+--         SELECT '桑植县' as 'county',sum(b.area) as areaVaild FROM v_carinfo_2022 a INNER JOIN
+--         (SELECT deviceId,workDate,sum(area) as area from jobdetaillst where factoryId='bochuang' and area>0 GROUP BY
+--         deviceId,workDate ) b ON a.deviceId = b.deviceId WHERE a.regionCode LIKE 'c61401%'
+--         UNION
+--         SELECT '临湘市' as 'county',sum(b.area) as areaVaild FROM v_carinfo_2022 a INNER JOIN
+--         (SELECT deviceId,workDate,sum(area) as area from jobdetaillst where factoryId='bochuang' and area>0 GROUP BY
+--         deviceId,workDate ) b ON a.deviceId = b.deviceId WHERE a.regionCode LIKE 'c60502%'
+--         UNION
+--         SELECT '华容县' as 'county',sum(b.area) as areaVaild FROM v_carinfo_2022 a INNER JOIN
+--         (SELECT deviceId,workDate,sum(area) as area from jobdetaillst where factoryId='bochuang' and area>0 GROUP BY
+--         deviceId,workDate ) b ON a.deviceId = b.deviceId WHERE a.regionCode LIKE 'c60507%'
+--         UNION
+--         SELECT '宁乡县' as 'county',sum(b.area) as areaVaild FROM v_carinfo_2022 a INNER JOIN
+--         (SELECT deviceId,workDate,sum(area) as area from jobdetaillst where factoryId='bochuang' and area>0 GROUP BY
+--         deviceId,workDate ) b ON a.deviceId = b.deviceId WHERE a.regionCode LIKE 'c60903%'
+        SELECT '宁乡县' as 'county',sum(area) as areaVaild from jobdetaillst where factoryId='bochuang' and area>0 AND
+        deviceId IN(
+        SELECT deviceId FROM v_carinfo_2022 WHERE (regionCode like 'c60903%')
+        union
+        SELECT deviceIdOld as deviceId FROM tb_devicelog a INNER JOIN tb_dept b on a.deptId=b.deptId WHERE (regionCode
+        like 'c60903%' )
+        GROUP BY deviceId)
+        UNION
+        SELECT '衡东县' as 'county',sum(area) as areaVaild from jobdetaillst where factoryId='bochuang' and area>0 AND
+        deviceId IN(
+        SELECT deviceId FROM v_carinfo_2022 WHERE (regionCode like 'c60104%')
+        union
+        SELECT deviceIdOld as deviceId FROM tb_devicelog a INNER JOIN tb_dept b on a.deptId=b.deptId WHERE (regionCode
+        like 'c60104%' )
+        GROUP BY deviceId)
+        UNION
+        SELECT '桑植县' as 'county',sum(area) as areaVaild from jobdetaillst where factoryId='bochuang' and area>0 AND
+        deviceId IN(
+        SELECT deviceId FROM v_carinfo_2022 WHERE (regionCode like 'c61401%')
+        union
+        SELECT deviceIdOld as deviceId FROM tb_devicelog a INNER JOIN tb_dept b on a.deptId=b.deptId WHERE (regionCode
+        like 'c61401%' )
+        GROUP BY deviceId)
+        UNION
+        SELECT '临湘市' as 'county',sum(area) as areaVaild from jobdetaillst where factoryId='bochuang' and area>0 AND
+        deviceId IN(
+        SELECT deviceId FROM v_carinfo_2022 WHERE (regionCode like 'c60502%')
+        union
+        SELECT deviceIdOld as deviceId FROM tb_devicelog a INNER JOIN tb_dept b on a.deptId=b.deptId WHERE (regionCode
+        like 'c60502%' )
+        GROUP BY deviceId)
+        UNION
+        SELECT '华容县' as 'county',sum(area) as areaVaild from jobdetaillst where factoryId='bochuang' and area>0 AND
+        deviceId IN(
+        SELECT deviceId FROM v_carinfo_2022 WHERE (regionCode like 'c60507%')
+        union
+        SELECT deviceIdOld as deviceId FROM tb_devicelog a INNER JOIN tb_dept b on a.deptId=b.deptId WHERE (regionCode
+        like 'c60507%' )
+        GROUP BY deviceId)
+
+
+    </select>
+
+
+    <!-- 位置查询 -->
+    <select id="findLocationByLists" parameterType="com.example.demo.modle.SchoolOrder" resultType="java.util.Map">
+        select
+        deviceId as l1,
+        carId as l2,
+        longitude as l3,
+        latitude as l4,
+        gpsTime as l5,
+        identifyId as l6,
+        depth as l7,
+        angle as l8,
+        speed as l9,
+        IFNULL(macWidth,0) as l10
+        from v_carinfo_rt_xuni
+        <where>
+            1=1
+            <choose>
+                <when test="deviceId != '' and deviceId != null">and deviceId = #{deviceId}</when>
+                <otherwise>
+                    and ( 1=0 or
+                    <foreach collection="regionCode" item="item" index="index"
+                             separator="or">
+                        regionCode like #{item}
+                    </foreach>
+                    )
+                </otherwise>
+            </choose>
+        </where>
+
+    </select>
+
+
+    <!-- 机具信息查询 -->
+    <select id="findMachineToolByList" parameterType="com.example.demo.modle.SchoolOrder" resultType="java.util.Map">
+        select
+        t.identifyId as m1,
+        t.workType as m2,
+        t.machineName as m3,
+        t.carId as m4,
+        t.width as m5
+        from
+        tb_identifymodule t,
+        v_carinfo c
+        <where>
+            t.carId = c.carId
+            <if test="machineId != '' and machineId != null">and t.machineId = #{machineId}</if>
+            <if test="deviceId != '' and deviceId != null">
+                and c.deviceId = #{deviceId}
+            </if>
+        </where>
+    </select>
+
+
+    <!-- 单位总数 -->
+    <select id="countDeptnum" parameterType="com.example.demo.modle.SchoolOrder" resultType="java.lang.Integer">
+        SELECT count(1) FROM tb_dept
+        <where>
+            1=1
+            <if test="deviceId != '' and deviceId != null">and deviceId = #{deviceId}</if>
+            <if test="deptId != '' and deptId != null">and deptId = #{deptId}</if>
+        </where>
+    </select>
+
+    <!-- 单位查询 -->
+    <select id="findDeptByLists" parameterType="com.example.demo.modle.SchoolOrder" resultType="java.util.Map">
+        select * from tb_dept
+        <where>
+            1=1
+            <if test="deviceId != '' and deviceId != null">and deviceId = #{deviceId}</if>
+            <if test="deptId != '' and deptId != null">and deptId = #{deptId}</if>
+        </where>
+        LIMIT #{page_index}, #{page_size};
+    </select>
+
+
+    <!-- 根据设备号查询到期时间 -->
+    <select id="lelectEndDate" parameterType="String" resultType="java.lang.String">
+        SELECT endDate FROM tb_car WHERE deviceId = #{deviceId}
+    </select>
+
+    <!-- 厂商设备添加 -->
+    <insert id="insertDeviceIdCompany" parameterType="com.example.demo.modle.DeviceIdCompanyInfo">
+        insert INTO car_plantform_company (deviceId,account) VALUES (#{deviceId},#{account})
+    </insert>
+
+    <!-- 查看厂商设备是否存在 -->
+    <select id="countDeviceId" parameterType="com.example.demo.modle.DeviceIdCompanyInfo"
+            resultType="java.lang.Integer">
+        SELECT count(1) FROM car_plantform_company WHERE deviceId = #{deviceId} AND account = #{account}
+    </select>
+
+
+</mapper>   
