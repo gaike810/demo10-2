@@ -66,14 +66,17 @@ public class Z_testclass6 {
 
         Map<String, Object> map = new HashMap<>();
         map.put("appid", "Q5F7A8e5va0ayfCg");
-        map.put("titile", "32");
-        map.put("content", "33");
+        map.put("title", "Hello Title3");
+        map.put("content", "Hello Content3");
         Z_testclass6.getAsciiSort(map);
-        String keys = "key=" + "keyvalue";
+        String keys = "&key=" + "ZkTVtWnaORoc3SinCQA0bV3i3RwEDK52";
         String all = Z_testclass6.getAsciiSort(map) + keys;
 //        String sign = ToUpperCase(MD5(all));
+        KamUtil.MD5(all).toUpperCase();
+        System.out.println(KamUtil.MD5(all).toUpperCase());
         System.out.println(all);
         System.out.println(Z_testclass6.getAsciiSort(map));
+        System.out.println("~");
 
     }
 
